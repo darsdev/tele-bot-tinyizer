@@ -1,9 +1,6 @@
 import requests as r
 import json as js
-import pyrebase, firebase_admin, urllib
 import time as t
-from pyrebase.pyrebase import storage  
-from firebase_admin import storage as admin_storage, credentials, firestore
 
 #5075714498:AAFLg-y4SCEKk3PBEFEAjhl4FK5ViJMJvUE
 id = 0
@@ -53,14 +50,109 @@ chars = [
     "⁰"
 ]
 
-if js.loads(r.get(url + "getUpdates").text)["result"] != [] and "inline_query" in js.loads(r.get(url + "getUpdates").text)["result"][0]:
+if js.loads(r.get(url + "getUpdates").text)["result"] != []:
     id = int(js.loads(r.get(url + "getUpdates").text)["result"][0]["update_id"])
 
 def recivedUpdate(queryId, content):
     if content != "":
-        print(content)
-        content.replace("b", "a")
-        print(content)
+        content = content.replace("a", chars[0])
+        content = content.replace("A", chars[1])
+
+        content = content.replace("b", chars[1])
+        content = content.replace("B", chars[1])
+        
+        content = content.replace("c", chars[2])
+        content = content.replace("C", chars[2])
+        
+        content = content.replace("d", chars[3])
+        content = content.replace("D", chars[3])
+        
+        content = content.replace("e", chars[4])
+        content = content.replace("E", chars[4])
+        
+        content = content.replace("f", chars[5])
+        content = content.replace("F", chars[5])
+        
+        content = content.replace("g", chars[6])
+        content = content.replace("G", chars[6])
+        
+        content = content.replace("h", chars[7])
+        content = content.replace("H", chars[7])
+        
+        content = content.replace("i", chars[8])
+        content = content.replace("I", chars[8])
+        
+        content = content.replace("j", chars[9])
+        content = content.replace("J", chars[9])
+        
+        content = content.replace("k", chars[10])
+        content = content.replace("K", chars[10])
+        
+        content = content.replace("l", chars[11])
+        content = content.replace("L", chars[11])
+        
+        content = content.replace("m", chars[12])
+        content = content.replace("M", chars[12])
+        
+        content = content.replace("n", chars[13])
+        content = content.replace("N", chars[13])
+        
+        content = content.replace("o", chars[14])
+        content = content.replace("O", chars[14])
+        
+        content = content.replace("p", chars[15])
+        content = content.replace("P", chars[15])
+        
+        content = content.replace("q", chars[16])
+        content = content.replace("Q", chars[16])
+        
+        content = content.replace("r", chars[17])
+        content = content.replace("R", chars[17])
+        
+        content = content.replace("s", chars[18])
+        content = content.replace("S", chars[18])
+        
+        content = content.replace("t", chars[19])
+        content = content.replace("T", chars[19])
+        
+        content = content.replace("u", chars[20])
+        content = content.replace("U", chars[20])
+        
+        content = content.replace("v", chars[21])
+        content = content.replace("V", chars[21]) 
+         
+        content = content.replace("w", chars[22])
+        content = content.replace("W", chars[22])
+          
+        content = content.replace("x", chars[23])
+        content = content.replace("X", chars[23])
+         
+        content = content.replace("y", chars[24])
+        content = content.replace("Y", chars[24])
+         
+        content = content.replace("z", chars[25])
+        content = content.replace("Z", chars[25])
+         
+        content = content.replace("1", chars[26])
+         
+        content = content.replace("2", chars[27])
+         
+        content = content.replace("3", chars[28])
+         
+        content = content.replace("4", chars[29])
+         
+        content = content.replace("5", chars[30])
+         
+        content = content.replace("6", chars[31])
+         
+        content = content.replace("7", chars[32])
+         
+        content = content.replace("8", chars[33])
+
+        content = content.replace("9", chars[34])
+        
+        content = content.replace("0", chars[35])
+        
         data["input_message_content"]["message_text"] = content
         data["title"] = content
         jsonData = js.dumps(data)
@@ -81,10 +173,42 @@ while True:
     if updateReq["result"] != []:
         if updateReqoff != []:
             if "inline_query" in updateReqoff[0]:
-                #t.sleep(0.3)
                 id = int(updateReq["result"][0]["update_id"]) + 1
                 recivedUpdate(updateReq["result"][0]["inline_query"]["id"], updateReq["result"][0]["inline_query"]["query"])
                 continue
+            elif "message" in updateReqoff[0]:
+                if updateReqoff[0]["message"]["text"] == "/start":
+                    id = int(updateReq["result"][0]["update_id"]) + 1
+                    senId = updateReqoff[0]["message"]["from"]["id"]
+                    dataj = {
+                        "chat_id": senId,
+                        "text": "Start Using the Bot In Inline Mode like This- @TinyizerBot enter any text here"
+                    }
+                    print(r.get(url + "sendMessage", params=dataj).url)
+                    continue
+
+                elif updateReqoff[0]["message"]["text"] == "/help":
+                    id = int(updateReq["result"][0]["update_id"]) + 1
+                    senId = updateReqoff[0]["message"]["from"]["id"]
+                    dataj = {
+                        "chat_id": senId,
+                        "text": "Start Using the Bot In Inline Mode like This- @TinyizerBot enter any text here"
+                    }
+                    print(r.get(url + "sendMessage", params=dataj).url)
+                    continue
+
+                elif updateReqoff[0]["message"]["text"] == "/settings":
+                    id = int(updateReq["result"][0]["update_id"]) + 1
+                    senId = updateReqoff[0]["message"]["from"]["id"]
+                    dataj = {
+                        "chat_id": senId,
+                        "text": "Never Gonna Give You Up, Never Gonna Let You Down"
+                    }
+                    print(r.get(url + "sendMessage", params=dataj).url)
+                    continue
+
+                else:
+                    continue
             else:
                 continue
 
