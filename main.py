@@ -4,6 +4,7 @@ import time as t
 
 #5075714498:AAFLg-y4SCEKk3PBEFEAjhl4FK5ViJMJvUE
 id = 0
+mesId = 0
 url = "https://api.telegram.org/bot5038867691:AAFM39l61cxZkBOfrI-6SVQfqEf7Z8xSV50/"
 data = {
     "type":"article",
@@ -49,6 +50,18 @@ chars = [
     "⁹",
     "⁰"
 ]
+
+updateReqoffParams = {
+    "offset": "0",
+    "allowed_updates": ["inline_query"]
+}
+
+updateReqoffMessageParams = {
+    "offset": "0",
+    "allowed_updates": ["message"]
+}
+
+mesIndex = 0
 
 if js.loads(r.get(url + "getUpdates").text)["result"] != []:
     id = int(js.loads(r.get(url + "getUpdates").text)["result"][0]["update_id"])
@@ -164,56 +177,55 @@ def recivedUpdate(queryId, content):
         print(req.url)
         print(req.text)
 
-    else:
-        exit
+    else: exit
 
 while True:
     updateReq = js.loads(r.get(url + "getUpdates").text)
-    updateReqoff = js.loads(r.get(url + "getUpdates?offset=" + str(id)).text)["result"]
+    updateReqoffParams["offset"] = str(id)
+    updateReqoff = js.loads(r.get(url + "getUpdates", params=updateReqoffParams).text)["result"]
+    updateReqoffMessageParams["offset"] = str(mesId)
+    updateReqoffMessage = js.loads(r.get(url + "getUpdates", params=updateReqoffMessageParams).text)["result"]
     if updateReq["result"] != []:
         if updateReqoff != []:
-            if "inline_query" in updateReqoff[0]:
-                id = int(updateReq["result"][0]["update_id"]) + 1
-                recivedUpdate(updateReq["result"][0]["inline_query"]["id"], updateReq["result"][0]["inline_query"]["query"])
+            if "inline_query" in updateReqoff[mesIndex]:
+                id = int(updateReqoff["result"][mesIndex]["update_id"]) + 1
+                t.sleep(0.1)
+                if js.loads(r.get(url + "getUpdates?offset=" + str(id)).text)["result"] == []:
+                    recivedUpdate(updateReqoff[mesIndex]["inline_query"]["id"], updateReqoff[mesIndex]["inline_query"]["query"])
                 continue
-            elif "message" in updateReqoff[0]:
-                if updateReqoff[0]["message"]["text"] == "/start":
-                    id = int(updateReq["result"][0]["update_id"]) + 1
-                    senId = updateReqoff[0]["message"]["from"]["id"]
-                    dataj = {
-                        "chat_id": senId,
-                        "text": "Start Using the Bot In Inline Mode like This- @TinyizerBot enter any text here"
-                    }
-                    print(r.get(url + "sendMessage", params=dataj).url)
-                    continue
+            elif "message" in updateReqoffMessage[0]:
+                if "text" in updateReqoffMessage[0]["message"]:
+                    if updateReqoffMessage[0]["message"]["text"] == "/start":
+                        mesId = int(updateReqoffMessage[0]["update_id"]) + 1
+                        senId = updateReqoffMessage[0]["message"]["from"]["id"]
+                        dataj = {
+                            "chat_id": senId,
+                            "text": "Start Using the Bot In Inline Mode like This- @TinyizerBot enter any text here"
+                        }
+                        print(r.get(url + "sendMessage", params=dataj).url)
+                        continue
 
-                elif updateReqoff[0]["message"]["text"] == "/help":
-                    id = int(updateReq["result"][0]["update_id"]) + 1
-                    senId = updateReqoff[0]["message"]["from"]["id"]
-                    dataj = {
-                        "chat_id": senId,
-                        "text": "Start Using the Bot In Inline Mode like This- @TinyizerBot enter any text here"
-                    }
-                    print(r.get(url + "sendMessage", params=dataj).url)
-                    continue
+                    elif updateReqoffMessage[0]["message"]["text"] == "/help":
+                        mesId = int(updateReqoffMessage[0]["update_id"]) + 1
+                        senId = updateReqoffMessage[0]["message"]["from"]["id"]
+                        dataj = {
+                            "chat_id": senId,
+                            "text": "Start Using the Bot In Inline Mode like This- @TinyizerBot enter any text here"
+                        }
+                        print(r.get(url + "sendMessage", params=dataj).url)
+                        continue
 
-                elif updateReqoff[0]["message"]["text"] == "/settings":
-                    id = int(updateReq["result"][0]["update_id"]) + 1
-                    senId = updateReqoff[0]["message"]["from"]["id"]
-                    dataj = {
-                        "chat_id": senId,
-                        "text": "Never Gonna Give You Up, Never Gonna Let You Down"
-                    }
-                    print(r.get(url + "sendMessage", params=dataj).url)
-                    continue
-
-                else:
-                    continue
-            else:
-                continue
-
-        else:
-            continue
-    
-    else:
-        continue
+                    elif updateReqoffMessage[0]["message"]["text"] == "/settings":
+                        mesId = int(updateReqoffMessage[0]["update_id"]) + 1
+                        senId = updateReqoffMessage[0]["message"]["from"]["id"]
+                        dataj = {
+                            "chat_id": senId,
+                            "text": "Never Gonna Give You Up, Never Gonna Let You Down"
+                        }
+                        print(r.get(url + "sendMessage", params=dataj).url)
+                        continue
+                    else: continue
+                else: continue
+            else: continue
+        else: continue
+    else: continue
