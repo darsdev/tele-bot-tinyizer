@@ -61,8 +61,6 @@ updateReqoffMessageParams = {
     "allowed_updates": ["message"]
 }
 
-mesIndex = 0
-
 if js.loads(r.get(URL + "getUpdates").text)["result"] != []:
     id = int(js.loads(r.get(URL + "getUpdates").text)["result"][0]["update_id"])
 
@@ -187,11 +185,11 @@ while True:
     updateReqoffMessage = js.loads(r.get(URL + "getUpdates", params=updateReqoffMessageParams).text)["result"]
     if updateReq["result"] != []:
         if updateReqoff != []:
-            if "inline_query" in updateReqoff[mesIndex]:
-                id = int(updateReqoff["result"][mesIndex]["update_id"]) + 1
+            if "inline_query" in updateReqoff[0]:
+                id = int(updateReqoff[0]["update_id"]) + 1
                 t.sleep(0.1)
                 if js.loads(r.get(URL + "getUpdates?offset=" + str(id)).text)["result"] == []:
-                    recivedUpdate(updateReqoff[mesIndex]["inline_query"]["id"], updateReqoff[mesIndex]["inline_query"]["query"])
+                    recivedUpdate(updateReqoff[0]["inline_query"]["id"], updateReqoff[0]["inline_query"]["query"])
                 continue
             elif "message" in updateReqoffMessage[0]:
                 if "text" in updateReqoffMessage[0]["message"]:
