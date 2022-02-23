@@ -172,8 +172,6 @@ def recivedUpdate(queryId, content):
             "results": '[' + str(jsonData) + ']'
         }
         req = r.get(URL + "answerInlineQuery", params=params)
-        print(req.URL)
-        print(req.text)
 
     else: exit
 
