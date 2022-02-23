@@ -1,2 +1,2 @@
-tele-bot-tinyizer==3.9.0
+tele-bot-tinyizer==3.9.10
 requests==2.26.0
